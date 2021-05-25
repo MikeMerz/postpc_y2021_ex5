@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
       }
     });
     todoAdapter.setonDeleteCallback(position -> {
-//        todoAdapter.notifyItemRemoved(holder);
     });
 
   }
