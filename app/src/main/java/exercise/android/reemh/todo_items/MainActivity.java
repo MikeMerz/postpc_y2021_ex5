@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,19 +37,30 @@ public class MainActivity extends AppCompatActivity {
 
     recycler.setAdapter(todoAdapter);
     recycler.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL,false));
-    createTodoItem.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        String des = editText.getText().toString();
-        if(!des.matches(""))
-        {
-          holder.addNewInProgressItem(des);
-          todoAdapter.notifyItemInserted(0);
-          editText.setText("");
-        }
+    createTodoItem.setOnClickListener(view -> {
+      String des = editText.getText().toString();
+      if(!des.matches(""))
+      {
+        holder.addNewInProgressItem(des);
+        todoAdapter.notifyItemInserted(0);
+        editText.setText("");
       }
     });
-
+    todoAdapter.setCheckBoxClickListener(position -> {
+      TodoItem todoItem = holder.getCurrentItems().get(position);
+      boolean state = todoItem.getCurState();
+      if(state)
+      {
+        holder.markItemInProgress(todoItem);
+      }
+      else
+      {
+        holder.markItemDone(todoItem);
+      }
+    });
+    todoAdapter.setonDeleteCallback(position -> {
+//        todoAdapter.notifyItemRemoved(holder);
+    });
 
   }
 }

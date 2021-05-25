@@ -9,7 +9,7 @@ public class TodoItem implements Serializable {
     private long createTime;
     public TodoItem()
     {
-        curState = false;
+        curState = true;
         createTime = System.currentTimeMillis();
     }
     public boolean getCurState(){return curState;}
