@@ -9,10 +9,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
 
   public TodoItemsHolder holder = null;
+
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -22,9 +27,29 @@ public class MainActivity extends AppCompatActivity {
     if (holder == null) {
       holder = new TodoItemsHolderImpl();
     }
-
+    EditText editText = findViewById(R.id.editTextInsertTask);
+    FloatingActionButton createTodoItem = findViewById(R.id.buttonCreateTodoItem);
+    RecyclerView recycler = findViewById(R.id.recyclerTodoItemsList);
+    TodoAdapterImpl todoAdapter = new TodoAdapterImpl(holder);
     // TODO: implement the specs as defined below
     //    (find all UI components, hook them up, connect everything you need)
+
+    recycler.setAdapter(todoAdapter);
+    recycler.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL,false));
+    createTodoItem.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        String des = editText.getText().toString();
+        if(!des.matches(""))
+        {
+          holder.addNewInProgressItem(des);
+          todoAdapter.notifyItemInserted(0);
+          editText.setText("");
+        }
+      }
+    });
+
+
   }
 }
 
