@@ -45,6 +45,14 @@ public class TodoAdapterImpl  extends RecyclerView.Adapter<TodoHolder> {
         {
             holder.changeViewText(todoItem.getDesc());
             holder.getCheckBox().setChecked(!todoItem.getCurState());
+            if(!holder.getCheckBox().isChecked())
+            {
+                holder.getTextView().setPaintFlags( holder.getTextView().getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+            }
+            else
+            {
+                holder.getTextView().setPaintFlags( holder.getTextView().getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            }
         }
         CheckBox checkBox = holder.getCheckBox();
         checkBox.setOnClickListener(view -> {
@@ -59,7 +67,6 @@ public class TodoAdapterImpl  extends RecyclerView.Adapter<TodoHolder> {
             else
             {
                 holder.getTextView().setPaintFlags( holder.getTextView().getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-
             }
         });
         Button delButton = holder.getDeleteButton();
