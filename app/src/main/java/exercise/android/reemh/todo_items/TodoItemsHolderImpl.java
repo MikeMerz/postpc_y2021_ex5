@@ -1,6 +1,7 @@
 package exercise.android.reemh.todo_items;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -25,22 +26,38 @@ public class TodoItemsHolderImpl implements TodoItemsHolder {
   @Override
   public void markItemDone(TodoItem item)
   {
-    for(int i=0;i<allList.size();++i)
-    {
-      if (item == allList.get(i))
-      {
-        allList.get(i).setCurState(true);
-      }
-    }
+    allList.remove(item);
+    allList.add(item);
+    item.setCurState(false);
   }
 
   @Override
-  public void markItemInProgress(TodoItem item) {item.setCurState(false);}
+  public void markItemInProgress(TodoItem item) {
+    allList.remove(item);
+    allList.add(0,item);
+    item.setCurState(true);
+  }
 
   @Override
   public void deleteItem(TodoItem item)
   {
     allList.remove(item);
   }
+  @Override
+  public Serializable saveState()
+  {
+    TodoState state = new TodoState();
+    state.savedItems = allList;
+    return state;
+  }
+  @Override
+  public void loadState(Serializable state)
+  {
+    TodoState state2 = (TodoState) state;
+    allList = state2.savedItems;
 
+  }
+  private static class TodoState implements Serializable{
+    private List<TodoItem> savedItems;
+  }
 }

@@ -26,8 +26,6 @@ public class TodoAdapterImpl  extends RecyclerView.Adapter<TodoHolder> {
     private checkBoxClickListener checkBoxClickListener;
     private onDelete  deleteCallbackListener;
 
-    public int pos;
-
 
     public TodoAdapterImpl(TodoItemsHolder holder2)
     {
@@ -46,13 +44,13 @@ public class TodoAdapterImpl  extends RecyclerView.Adapter<TodoHolder> {
         if(todoItem != null)
         {
             holder.changeViewText(todoItem.getDesc());
-//            holder.setCheckBox(todoItem.getCurState());
+            holder.getCheckBox().setChecked(!todoItem.getCurState());
         }
         CheckBox checkBox = holder.getCheckBox();
         checkBox.setOnClickListener(view -> {
             if(checkBoxClickListener != null)
             {
-                checkBoxClickListener.onCheckBoxCallback(position);
+                checkBoxClickListener.onCheckBoxCallback(holder.getAdapterPosition());
             }
             if(!holder.getCheckBox().isChecked())
             {
@@ -63,37 +61,13 @@ public class TodoAdapterImpl  extends RecyclerView.Adapter<TodoHolder> {
                 holder.getTextView().setPaintFlags( holder.getTextView().getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
             }
-//                notifyItemMoved();
-//                if (itemsHolder.getCurrentItems().size() != 0)
-//                {
-//                    TodoItem first = itemsHolder.getCurrentItems().get(0);
-//                    itemsHolder.getCurrentItems().set(0,itemsHolder.getCurrentItems().get(position));
-//                    for(int i=0;i<itemsHolder.getCurrentItems().size();++i)
-//                    {
-//                        TodoItem temp = itemsHolder.getCurrentItems().get(i);
-//                        itemsHolder.getCurrentItems().set(i,first);
-//                        first = temp;
-//                    }
-//
-//                }
-//                itemsHolder.getCurrentItems().sort(new Comparator<TodoItem>() {
-//                    @Override
-//                    public int compareTo(TodoItem todoItem) {
-//                        return 0;
-//                    }
-//                });
-//                holder.setCheckBox(!holder.getCheckBox().isChecked());
         });
         Button delButton = holder.getDeleteButton();
         delButton.setOnClickListener(view -> {
             if(deleteCallbackListener != null)
             {
-                deleteCallbackListener.onDeleteCallback(position);
+                deleteCallbackListener.onDeleteCallback(holder.getAdapterPosition());
             }
-            pos = holder.getAdapterPosition()+1;
-            TodoItem temp = itemsHolder.getCurrentItems().get( holder.getAdapterPosition());
-            itemsHolder.deleteItem( temp);
-
         });
 
     }

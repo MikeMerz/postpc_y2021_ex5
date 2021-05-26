@@ -1,5 +1,6 @@
 package exercise.android.reemh.todo_items;
 
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -23,4 +24,6 @@ public interface TodoItemsHolder {
 
   /** delete the @param item */
   void deleteItem(TodoItem item);
+  Serializable saveState();
+  void loadState(Serializable state);
 }

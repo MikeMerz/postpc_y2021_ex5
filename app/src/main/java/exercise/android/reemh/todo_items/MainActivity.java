@@ -1,12 +1,14 @@
 package exercise.android.reemh.todo_items;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,17 +51,34 @@ public class MainActivity extends AppCompatActivity {
     todoAdapter.setCheckBoxClickListener(position -> {
       TodoItem todoItem = holder.getCurrentItems().get(position);
       boolean state = todoItem.getCurState();
-      if(state)
+      if(!state)
       {
         holder.markItemInProgress(todoItem);
+        todoAdapter.notifyItemMoved(position,0);
       }
       else
       {
         holder.markItemDone(todoItem);
+        todoAdapter.notifyItemMoved(position,holder.getCurrentItems().size()-1);
       }
     });
     todoAdapter.setonDeleteCallback(position -> {
+      holder.deleteItem(holder.getCurrentItems().get(position));
+      todoAdapter.notifyItemRemoved(position);
     });
+
+  }
+
+  @Override
+  public void onSaveInstanceState(@NonNull Bundle outState) {
+    super.onSaveInstanceState(outState);
+    outState.putSerializable("toDo",holder.saveState());
+  }
+
+  @Override
+  public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+    super.onRestoreInstanceState(savedInstanceState);
+    holder.loadState(savedInstanceState.getSerializable("toDo"));
 
   }
 }
