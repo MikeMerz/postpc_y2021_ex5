@@ -1,3 +1,10 @@
+"I pledge the highest level of ethical principles in support of academic excellence.  I ensure that all of my work reflects my own abilities and not those of someone else."
+
+Answer to Question:I would define a more informative button and edittext,and some Columns with header to give more information about each field of the item thus 
+it will be easier for users to understand each item even after a couple of days when not completing the task and some toast massage when removing an item as to 
+"celebrate" its removal, i think the implemention is more hard on the UI front but is not hard on the logical front.
+I think it's consistent with the edit flows  and only effects the UI.
+
 # TodoItems List
 
 An Android exercise for developers teaching how to play around with RecyclerView and Adapter
