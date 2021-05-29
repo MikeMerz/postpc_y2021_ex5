@@ -31,6 +31,34 @@ public class TodoItemsHolderImpl implements TodoItemsHolder {
     this.sp = context.getSharedPreferences("local_change",Context.MODE_PRIVATE);
     initFromSp();
   }
+  class compareJobs implements Comparator<TodoItem>
+  {
+    @Override
+    public int compare(TodoItem item, TodoItem t1) {
+      if(item.getCurState() == t1.getCurState())
+      {
+        if(item.getModifiedDate().isAfter(t1.getModifiedDate()))
+        {
+          return 1;
+        }else if(t1.getModifiedDate().isAfter(item.getModifiedDate()))
+        {
+          return  -1;
+        }
+        else
+        {
+          return 0;
+        }
+      }
+      else
+      {
+        if(item.getCurState())
+        {
+          return -1;
+        }
+        return 1;
+      }
+    }
+  }
 
   private void initFromSp()
   {
@@ -48,6 +76,7 @@ public class TodoItemsHolderImpl implements TodoItemsHolder {
         this.allList.add(item);
       }
     }
+    this.allList.sort(new compareJobs());
 
   }
   private void updateSp(TodoItem item)
