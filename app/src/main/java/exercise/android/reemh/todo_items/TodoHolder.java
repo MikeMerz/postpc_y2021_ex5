@@ -15,11 +15,13 @@ class TodoHolder extends RecyclerView.ViewHolder
     private TextView editText;
     private CheckBox checkBox;
     private Button imageButton;
+    private View itemView;
     public TodoHolder(final View itemView) {
         super(itemView);
         editText = itemView.findViewById(R.id.textView);
         checkBox = itemView.findViewById(R.id.checkBox);
         imageButton = itemView.findViewById(R.id.button);
+        this.itemView = itemView;
 
     }
     public void changeViewText(String text)
@@ -33,5 +35,6 @@ class TodoHolder extends RecyclerView.ViewHolder
     public CheckBox getCheckBox(){return checkBox;}
     public Button getDeleteButton(){return imageButton;}
     public TextView getTextView(){return editText;}
+    public View getRow(){return this.itemView;}
 
 }

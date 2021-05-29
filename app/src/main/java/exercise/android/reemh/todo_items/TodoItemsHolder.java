@@ -26,4 +26,5 @@ public interface TodoItemsHolder {
   void deleteItem(TodoItem item);
   Serializable saveState();
   void loadState(Serializable state);
+  void changeDesc(TodoItem item,String des);
 }

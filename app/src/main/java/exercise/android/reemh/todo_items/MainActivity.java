@@ -6,6 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -20,15 +24,17 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class MainActivity extends AppCompatActivity {
 
   public TodoItemsHolder holder = null;
+  private BroadcastReceiver receiverDBChange;
 
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-
+    TodoItemApp app = (TodoItemApp) getApplicationContext();
+    this.holder = app.db;
     if (holder == null) {
-      holder = new TodoItemsHolderImpl();
+      holder = new TodoItemsHolderImpl(this);
     }
     EditText editText = findViewById(R.id.editTextInsertTask);
     FloatingActionButton createTodoItem = findViewById(R.id.buttonCreateTodoItem);
@@ -44,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
       if(!des.matches(""))
       {
         holder.addNewInProgressItem(des);
-        todoAdapter.notifyItemInserted(0);
+//        todoAdapter.notifyItemInserted(0);
         editText.setText("");
       }
     });
@@ -54,19 +60,57 @@ public class MainActivity extends AppCompatActivity {
       if(!state)
       {
         holder.markItemInProgress(todoItem);
-        todoAdapter.notifyItemMoved(position,0);
+//        todoAdapter.notifyItemMoved(position,0);
       }
       else
       {
         holder.markItemDone(todoItem);
-        todoAdapter.notifyItemMoved(position,holder.getCurrentItems().size()-1);
+//        todoAdapter.notifyItemMoved(position,holder.getCurrentItems().size()-1);
       }
     });
     todoAdapter.setonDeleteCallback(position -> {
       holder.deleteItem(holder.getCurrentItems().get(position));
-      todoAdapter.notifyItemRemoved(position);
+//      todoAdapter.notifyItemRemoved(position);
+    });
+    todoAdapter.setonEditCallback(position -> {
+      Intent newIntent = new Intent(MainActivity.this,EditTodoItem.class);
+      newIntent.putExtra("pos",position);
+      startActivity(newIntent);
     });
 
+    receiverDBChange = new BroadcastReceiver() {
+      @Override
+      public void onReceive(Context context, Intent intent) {
+        if(intent.getAction()!= null && intent.getAction().equals("db_change"))
+        {
+          if (intent.getIntExtra("added_item",-1) != -1)
+          {
+            todoAdapter.notifyItemInserted(intent.getIntExtra("added_item",-1));
+          }
+          else if(intent.getIntExtra("item_to_done",-1) != -1)
+          {
+            todoAdapter.notifyItemMoved(intent.getIntExtra("item_to_done",-1),holder.getCurrentItems().size()-1);
+          }
+          else if(intent.getIntExtra("item_to_progress",-1) != -1)
+          {
+            todoAdapter.notifyItemMoved(intent.getIntExtra("item_to_done",-1),0);
+          }
+          else if(intent.getIntExtra("deleted_item",-1) != -1)
+          {
+            todoAdapter.notifyItemRemoved(intent.getIntExtra("deleted_item",-1));
+          }
+          todoAdapter.notifyDataSetChanged();
+        }
+      }
+    };
+    registerReceiver(receiverDBChange,new IntentFilter("db_change"));
+
+  }
+
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    unregisterReceiver(receiverDBChange);
   }
 
   @Override

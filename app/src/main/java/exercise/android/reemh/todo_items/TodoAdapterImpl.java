@@ -18,13 +18,17 @@ public class TodoAdapterImpl  extends RecyclerView.Adapter<TodoHolder> {
     private TodoItemsHolder itemsHolder;
 
     interface checkBoxClickListener{
-         void onCheckBoxCallback(int position);}
+        void onCheckBoxCallback(int position);}
     interface onDelete{
-         void onDeleteCallback(int position);
+        void onDeleteCallback(int position);
+    }
+    interface onCallEditListner {
+        void onEditCall(int position);
     }
 
     private checkBoxClickListener checkBoxClickListener;
     private onDelete  deleteCallbackListener;
+    private onCallEditListner onEditListener;
 
 
     public TodoAdapterImpl(TodoItemsHolder holder2)
@@ -76,6 +80,16 @@ public class TodoAdapterImpl  extends RecyclerView.Adapter<TodoHolder> {
                 deleteCallbackListener.onDeleteCallback(holder.getAdapterPosition());
             }
         });
+        View view = holder.getRow();
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(onEditListener != null)
+                {
+                    onEditListener.onEditCall(holder.getAdapterPosition());
+                }
+            }
+        });
 
     }
     @Override
@@ -88,4 +102,5 @@ public class TodoAdapterImpl  extends RecyclerView.Adapter<TodoHolder> {
     public void setonDeleteCallback(onDelete toSet){
         deleteCallbackListener = toSet;
     }
+    public void setonEditCallback(onCallEditListner toSet){onEditListener = toSet;}
 }
